@@ -141,7 +141,7 @@ public class ZhuatuPpmsgTest {
 		config.setCharset("gb2312");
 		config.setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\ppmsgjp");
 //		config.setReqHtml(false);
-		ZhuatuFactory.createDownloadZhuatu().start(
+		ZhuatuFactory.start(
 				urlRoot, zhuatuServices,config);
 	}
 

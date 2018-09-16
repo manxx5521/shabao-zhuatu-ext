@@ -130,7 +130,7 @@ public class ZhuTu99renti {
 		});
 
 		// 装载抓图任务
-		ZhuatuFactory.createDownloadZhuatu().start("http://www.ggrenti.org/html/guomosipai/", zhuatuServices,
+		ZhuatuFactory.start("http://www.ggrenti.org/html/guomosipai/", zhuatuServices,
 //				ZhuatuFactory.createDownloadZhuatu().start("http://www.99renti.wang/html/guomosipai/", zhuatuServices,
 				"E:\\test\\shabao-m\\resources\\plugins\\mm\\99renti", "GBK");
 	}

@@ -131,7 +131,7 @@ public class ZhuTuGmtt8 {
 		});
 
 		// 装载抓图任务
-		ZhuatuFactory.createDownloadZhuatu().start(
+		ZhuatuFactory.start(
 				"http://www.gmtt8.com/archives/category/%E5%9B%BD%E6%A8%A1%E5%A5%97%E5%9B%BE/", zhuatuServices,
 				"E:\\test\\shabao-m\\resources\\plugins\\mm\\gmtt8");
 	}
