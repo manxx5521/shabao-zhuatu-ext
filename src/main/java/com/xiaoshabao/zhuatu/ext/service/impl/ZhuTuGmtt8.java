@@ -39,7 +39,7 @@ public class ZhuTuGmtt8 {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws ParserException {
 				final List<TuInfo> result = new LinkedList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList list = parser.parse(new HasAttributeFilter("rel", "bookmark"));
 
 				for (Node node : list.toNodeArray()) {
@@ -64,7 +64,7 @@ public class ZhuTuGmtt8 {
 			@Override
 			public String nextPage(String html, ZhuatuConfig config) throws ParserException {
 				String nextUrl = null;
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList nexts = parser.parse(new HasAttributeFilter("class", "page-numbers"));
 				for (Node node : nexts.toNodeArray()) {
 					if (node instanceof LinkTag) {
@@ -84,13 +84,13 @@ public class ZhuTuGmtt8 {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws ParserException {
 				List<TuInfo> result = new LinkedList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 
 				NodeList imgs = parser.parse(new HasAttributeFilter("class", "size-full"));
 
 				// 换解析思路
 				if (imgs == null || imgs.size() < 1) {
-					imgs = Parser.createParser(html, config.getCharset()).parse(new TagNameFilter("img"));
+					imgs = Parser.createParser(html, config.getCharsetString()).parse(new TagNameFilter("img"));
 				}
 
 				for (Node node : imgs.toNodeArray()) {

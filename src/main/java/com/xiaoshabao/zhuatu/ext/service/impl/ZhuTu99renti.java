@@ -31,8 +31,8 @@ public class ZhuTu99renti {
 
 	private final static Logger logger = LoggerFactory.getLogger(ZhuTu99renti.class);
 
-//	protected String urlRoot = "http://www.ggrenti.org";
-	protected String urlRoot = "http://www.99renti.wang";
+	protected String url = "http://www.9grenti.net/html/guomosipai/";
+	
 	
 	/**封面图片 不下载*/
 	private final static String FM_JPG="slt.jpg";
@@ -45,7 +45,7 @@ public class ZhuTu99renti {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws ParserException {
 				final List<TuInfo> result = new LinkedList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList list = parser.parse(new HasAttributeFilter("class", "ulPic"));
 				Node body = list.elementAt(0);
 				body.accept(new NodeVisitor() {
@@ -57,7 +57,7 @@ public class ZhuTu99renti {
 							String title = ZhuatuUtil.formatTitleName(link.getAttribute("title"));
 
 							TuInfo info = new TuInfo();
-							info.setUrl(urlRoot + href);
+							info.setUrl(config.getWebRoot() + href);
 							info.setTitle(title);
 							result.add(info);
 						}
@@ -69,13 +69,13 @@ public class ZhuTu99renti {
 			@Override
 			public String nextPage(String html, ZhuatuConfig config) throws ParserException {
 				String nextUrl = null;
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList nexts = parser.parse(new HasAttributeFilter("class", "a1"));
 				for (Node node : nexts.toNodeArray()) {
 					LinkTag link = (LinkTag) node;
 					nextUrl = link.getLink();
 					if (StringUtils.isNotEmpty(nextUrl)) {
-						nextUrl = urlRoot + nextUrl;
+						nextUrl = config.getWebRoot() + nextUrl;
 					}
 				}
 				return nextUrl;
@@ -88,7 +88,7 @@ public class ZhuTu99renti {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws ParserException {
 				List<TuInfo> result = new LinkedList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 
 				NodeList imgs = parser.parse(new TagNameFilter("img"));
 				for (Node node : imgs.toNodeArray()) {
@@ -114,13 +114,13 @@ public class ZhuTu99renti {
 			@Override
 			public String nextPage(String html, ZhuatuConfig config) throws ParserException {
 				String nextUrl = null;
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList nexts = parser.parse(new HasAttributeFilter("class", "a1"));
 				for (Node node : nexts.toNodeArray()) {
 					LinkTag link = (LinkTag) node;
 					nextUrl = link.getLink();
 					if (StringUtils.isNotEmpty(nextUrl)) {
-						nextUrl = urlRoot + nextUrl;
+						nextUrl = config.getWebRoot() + nextUrl;
 					}
 				}
 
@@ -130,9 +130,7 @@ public class ZhuTu99renti {
 		});
 
 		// 装载抓图任务
-		ZhuatuFactory.start("http://www.ggrenti.org/html/guomosipai/", zhuatuServices,
-//				ZhuatuFactory.createDownloadZhuatu().start("http://www.99renti.wang/html/guomosipai/", zhuatuServices,
-				"E:\\test\\shabao-m\\resources\\plugins\\mm\\99renti", "GBK");
+		ZhuatuFactory.start(url, zhuatuServices, "E:\\test\\shabao-m\\resources\\plugins\\mm\\99renti", "GBK");
 	}
 
 }

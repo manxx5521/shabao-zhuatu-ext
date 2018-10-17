@@ -37,7 +37,7 @@ public class ZhuatuPpmsgTest {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws Exception {
 				List<TuInfo> result = new ArrayList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList list = parser.parse(new HasAttributeFilter("class", "lm"));
 				Node body = list.elementAt(0);
 				body.accept(new NodeVisitor() {
@@ -70,7 +70,7 @@ public class ZhuatuPpmsgTest {
 			@Override
 			public String nextPage(String html, ZhuatuConfig config) throws ParserException {
 				String nextUrl = null;
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList nextUl = parser.parse(new HasAttributeFilter("class", "page"));
 				NodeList nexts=nextUl.toNodeArray()[0].getChildren();
 				for (Node node : nexts.toNodeArray()) {
@@ -94,7 +94,7 @@ public class ZhuatuPpmsgTest {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws Exception {
 				List<TuInfo> result = new LinkedList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList imgagetList = parser.parse(new HasAttributeFilter("id", "imagelist"));
 				NodeList imgs=imgagetList.toNodeArray()[0].getChildren();
 				for (Node node : imgs.toNodeArray()) {
@@ -116,7 +116,7 @@ public class ZhuatuPpmsgTest {
 			@Override
 			public String nextPage(String html, ZhuatuConfig config) throws Exception {
 				TuInfo info = new TuInfo();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList list = parser.parse(new HasAttributeFilter("class", "image"));
 				Node body = list.elementAt(0);
 				body.accept(new NodeVisitor() {
