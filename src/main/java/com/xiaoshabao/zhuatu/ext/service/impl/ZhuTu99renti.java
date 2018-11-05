@@ -16,22 +16,21 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.ZhuatuUtil;
 import com.xiaoshabao.zhuatu.core.ZhuatuFactory;
+import com.xiaoshabao.zhuatu.http.HttpType;
 import com.xiaoshabao.zhuatu.service.ZhuatuDownloadService;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
 import com.xiaoshabao.zhuatu.service.ZhuatuWaitService;
 
 public class ZhuTu99renti {
 
-	private final static Logger logger = LoggerFactory.getLogger(ZhuTu99renti.class);
+//	private final static Logger logger = LoggerFactory.getLogger(ZhuTu99renti.class);
 
-	protected String url = "http://www.9grenti.net/html/guomosipai/";
+	protected String url = "http://www.9grenti.org/html/guomosipai/";
 	
 	
 	/**封面图片 不下载*/
@@ -98,7 +97,7 @@ public class ZhuTu99renti {
 					if (alt == null || src == null||src.endsWith(ZhuTu99renti.FM_JPG)||!alt.equals(pageInfo.getTitle())) {
 						continue;
 					}
-					logger.info("取到下载链接：" + src);
+//					logger.info("取到下载链接：" + src);
 					if (src.endsWith("/")) {
 						throw new RuntimeException("获得的图片下载链接错误");
 					}
@@ -118,19 +117,22 @@ public class ZhuTu99renti {
 				NodeList nexts = parser.parse(new HasAttributeFilter("class", "a1"));
 				for (Node node : nexts.toNodeArray()) {
 					LinkTag link = (LinkTag) node;
-					nextUrl = link.getLink();
-					if (StringUtils.isNotEmpty(nextUrl)) {
-						nextUrl = config.getWebRoot() + nextUrl;
+					if ("下一页".equals(link.getLinkText())) {
+						nextUrl = config.getWebRoot() + link.getLink();
 					}
 				}
-
 				return nextUrl;
 			}
 
 		});
 
 		// 装载抓图任务
-		ZhuatuFactory.start(url, zhuatuServices, "E:\\test\\shabao-m\\resources\\plugins\\mm\\99renti", "GBK");
+		ZhuatuConfig config=new ZhuatuConfig();
+		config.setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\99renti");
+		config.setCharset("GBK");
+		config.setDwonloadType(HttpType.HTTPCLIENT);
+//		config.addCheckPoject("丰满圆润的美女果果大尺度情趣内衣人体");
+		ZhuatuFactory.start(url, zhuatuServices, config);
 	}
 
 }

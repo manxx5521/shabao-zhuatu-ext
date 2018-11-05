@@ -30,9 +30,8 @@ public class Zhuatu1024Test {
 	
 	private final static Logger log = LoggerFactory.getLogger(Zhuatu1024Test.class);
 
-//	protected String url = "http://cl.mf8q.pw/thread0806.php?fid=16";
-//	protected String url = "https://c6.8ib.info/thread0806.php?fid=16"/*+"&search=&page=101"*/;
-	protected String url = "http://t66y.com/thread0806.php?fid=16"/*+"&search=&page=101"*/;
+//	protected String url = "http://t66y.com/thread0806.php?fid=16";
+	protected String url = "http://www.caoliu2049.com/thread0806.php?fid=16";
 	
 	@Test
 	public void test() {
@@ -118,7 +117,7 @@ public class Zhuatu1024Test {
 		ZhuatuConfig config=new ZhuatuConfig();
 		config.setCharset("gbk");
 		config.setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\1024");
-		config.setProxyConfig("127.0.0.1", 1080);
+//		config.setProxyConfig("127.0.0.1", 1080);
 		/*
 		config.addNoUrl("https://s19.postimg.org");
 		config.addNoUrl("https://s20.postimg.org");//https://s20.postimg.org/s7cdqfyel/image.jpg
@@ -162,22 +161,21 @@ public class Zhuatu1024Test {
 		*/
 		
 		//优先下载
-		
+		/*
 		config.addFirstProject("拉拉队长","蜜丝原创","花颜","蜀黍原创","护士老婆","茵茵","骚甜甜","赌博少妇","兔精女王");
 		config.addFirstProject("兔妈妈","贱宝","提香","家有仙妻Lee","娇妻美美","菀晴","恋瑾","球王酥酥","樱玉花子","西安的太阳");
-		config.addFirstProject("芭芭拉","娇妻美美","黛西","DDCLUB","小棒冰","开放教师","六九公社","太阳花","Facepower");
+		config.addFirstProject("芭芭拉","娇妻美美","黛西","DDCLUB","小棒冰","开放教师","六九公社","太阳花","Facepower","狐狸的小柠檬","爱妻小可爱");
 		config.addFirstProject("小炮哥","啪照工作室","吾家骚妻","嫩穴媳妇","软萌小仙女","甜甜","旧叙系列","海南小骚","玲玲的鸡巴","太乙归来","美腿娇妻");
 		config.addFirstProject("上官大人","花花","济南活动","璐璐","辣妈辣嘛","海南小骚逼","时间灰烬","阿育王天瞳","無念出品","沐逸逸");
 		config.addFirstProject("模特第","骚婷婷","闲愁出品","月儿吖吖","快乐18出品","浪子原创","骚妻养成计划","美腿娇妻","感恩草榴","单纯小婷婷");
 		config.addFirstProject("魅蓝师傅","母畜多多","抽象孙先生","约神猎物","森系女神","南阳凡哥","包子铺","真空少女","楚榴香","12316757","萌娃M");
-		/*
+		
 		config.addFirstProject("露出","SM","公园","野外","老司机集结号","Tumblr","美美","一纳疯骚","多多","疯骚贱客","缘分","肉便器","熟女姐姐","小母狗","骚妻情趣睡衣诱惑","人造白虎少妇情人");
 		*/
 		config.addExtSavePath("J:\\vm\\图片系列\\名站图片\\1024普通");
 		config.addExtSavePath("J:\\vm\\图片系列\\名站图片\\1024知名");
 		config.addExtSavePath("J:\\vm\\图片系列\\名站图片\\1024记载");//记录后不再下载，源文件夹可能已经改名
 		config.addExtSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\1024露出");
-		ZhuatuFactory.start(
-				url, zhuatuServices,config);
+		ZhuatuFactory.start( url, zhuatuServices,config);
 	}
 }
