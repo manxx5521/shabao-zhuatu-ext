@@ -26,10 +26,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xiaoshabao.zhuatu.TuInfo;
-import com.xiaoshabao.zhuatu.ZhuatuConfig;
-import com.xiaoshabao.zhuatu.core.ZhuatuFactory;
-import com.xiaoshabao.zhuatu.service.ZhuatuService;
+import com.xiaoshabao.zhuatu.core.ZhuatuCenter;
 
 public class YoukuRenameTest {
 
@@ -38,8 +35,6 @@ public class YoukuRenameTest {
 	
 	private static DateFormat ddFormat = new SimpleDateFormat("yyyy.MM.dd");
 
-	private String defaultCharset = "UTF-8";
-	
 	private Map<String,List<Video>> videos=new HashMap<String, List<Video>>(50);
 	
 	private List<Project> projectList=new LinkedList<YoukuRenameTest.Project>();
@@ -104,85 +99,69 @@ public class YoukuRenameTest {
 			listVideo.add(video);
 			videos.put(FilenameUtils.getBaseName(video.realName), listVideo);
 		}
-		
-		List<ZhuatuService> zhuatuServices = new ArrayList<ZhuatuService>();
-		// 第一层解析分项的信息，找打具体的项目
-		zhuatuServices.add(new ZhuatuService() {
-			@Override
-			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) {
-				final List<TuInfo> result = new LinkedList<TuInfo>();
-				try {
-					Parser parser = Parser.createParser(html, defaultCharset);
-					NodeList list = parser.parse(new HasAttributeFilter("class",
-							"v-meta"));
+		new ZhuatuCenter().createConfig().setUrl(project.getUrl()).createService()
+		.parserResultFunction((html,pageInfo,config,result)->{
+			try {
+				Parser parser = Parser.createParser(html,config.getCharsetString());
+				NodeList list = parser.parse(new HasAttributeFilter("class","v-meta"));
 
-					for (Node node : list.toNodeArray()) {
-						if (node instanceof Div) {
-							Video temp=new Video();
-							
-							node.accept(new NodeVisitor() {
-								@Override
-								public void visitTag(Tag tag) {
-									if (tag instanceof LinkTag) {
-										LinkTag link = (LinkTag) tag;
-										temp.title=link.getAttribute("title") ;
-									}
-									if (tag instanceof Span) {
-										Span span = (Span) tag;
-										if("v-publishtime".equals(span.getAttribute("class"))){
-											temp.date=parserDate(span.getStringText());
-										}
-									}
+				for (Node node : list.toNodeArray()) {
+					if (node instanceof Div) {
+						Video temp=new Video();
+						
+						node.accept(new NodeVisitor() {
+							@Override
+							public void visitTag(Tag tag) {
+								if (tag instanceof LinkTag) {
+									LinkTag link = (LinkTag) tag;
+									temp.title=link.getAttribute("title") ;
 								}
-							});
-							if(temp.title!=null){
-								List<Video> listVideo=videos.get(temp.title.replace(" ", "_"));
-								if(listVideo!=null){
-									for(Video video:listVideo){
-										video.date=temp.date;
-										reName(video);
+								if (tag instanceof Span) {
+									Span span = (Span) tag;
+									if("v-publishtime".equals(span.getAttribute("class"))){
+										temp.date=parserDate(span.getStringText());
 									}
 								}
 							}
-							
-						}
-
-					}
-				} catch (Exception e) {
-					log.error("解析出错{}", pageInfo.getUrl(), e);
-				}
-				return result;
-			}
-
-			@Override
-			public String  nextPage(String html, ZhuatuConfig config) {
-				try {
-					Parser parser = Parser.createParser(html, defaultCharset);
-					NodeList nexts = parser.parse(new HasAttributeFilter(
-							"class", "next"));
-					for (Node node : nexts.toNodeArray()) {
-						if (node instanceof Bullet) {
-							Bullet li = (Bullet) node;
-							Node [] links=li.getChildrenAsNodeArray();
-							if(links.length>0&&links[0] instanceof LinkTag){
-								LinkTag link = (LinkTag)links[0];
-								String href = link.getLink().replace("amp;", "");
-								return href;
+						});
+						if(temp.title!=null){
+							List<Video> listVideo=videos.get(temp.title.replace(" ", "_"));
+							if(listVideo!=null){
+								for(Video video:listVideo){
+									video.date=temp.date;
+									reName(video);
+								}
 							}
 						}
-
+						
 					}
-				} catch (Exception e) {
-					log.error("下一页 解析出错{}", e);
-				}
-				return null;
-			}
 
-		});
-		
-		// 装载抓图任务
-		ZhuatuFactory.start(project.getUrl(), zhuatuServices,
-						null, defaultCharset);
+				}
+			} catch (Exception e) {
+				log.error("解析出错{}", pageInfo.getUrl(), e);
+			}
+		}).next((html,config)->{
+			try {
+				Parser parser = Parser.createParser(html, config.getCharsetString());
+				NodeList nexts = parser.parse(new HasAttributeFilter(
+						"class", "next"));
+				for (Node node : nexts.toNodeArray()) {
+					if (node instanceof Bullet) {
+						Bullet li = (Bullet) node;
+						Node [] links=li.getChildrenAsNodeArray();
+						if(links.length>0&&links[0] instanceof LinkTag){
+							LinkTag link = (LinkTag)links[0];
+							String href = link.getLink().replace("amp;", "");
+							return href;
+						}
+					}
+
+				}
+			} catch (Exception e) {
+				log.error("下一页 解析出错{}", e);
+			}
+			return null;
+		}).start();
 	}
 	
 	public String parserDate(String str){

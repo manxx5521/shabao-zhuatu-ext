@@ -1,8 +1,4 @@
 package com.xiaoshabao.zhuatu.ext.service.impl;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.Tag;
@@ -11,17 +7,11 @@ import org.htmlparser.tags.BulletList;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 import org.junit.Test;
 
-import com.xiaoshabao.zhuatu.TuInfo;
-import com.xiaoshabao.zhuatu.ZhuatuConfig;
-import com.xiaoshabao.zhuatu.ZhuatuUtil;
-import com.xiaoshabao.zhuatu.core.ZhuatuFactory;
-import com.xiaoshabao.zhuatu.service.ZhuatuDownloadService;
-import com.xiaoshabao.zhuatu.service.ZhuatuService;
-import com.xiaoshabao.zhuatu.service.ZhuatuWaitService;
+import com.xiaoshabao.zhuatu.core.TuInfo;
+import com.xiaoshabao.zhuatu.core.ZhuatuCenter;
 
 public class ZhuatuPpmsgTest {
 
@@ -31,118 +21,79 @@ public class ZhuatuPpmsgTest {
 
 	@Test
 	public void test() {
-		List<ZhuatuService> zhuatuServices = new ArrayList<ZhuatuService>();
-		// 第一层解析分项的信息，找打具体的项目
-		zhuatuServices.add(new ZhuatuWaitService()  {
-			@Override
-			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws Exception {
-				List<TuInfo> result = new ArrayList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharsetString());
-				NodeList list = parser.parse(new HasAttributeFilter("class", "lm"));
-				Node body = list.elementAt(0);
-				body.accept(new NodeVisitor() {
-					@Override
-					public void visitTag(Tag tag) {
-						if (tag instanceof LinkTag) {
-							LinkTag link = (LinkTag) tag;
-							String href = link.getLink();
-							String title = ZhuatuUtil.formatTitleName(link.getLinkText());
-							
-							Object parent=link.getParent();
-							if(parent instanceof BulletList){
-								BulletList bulletList=(BulletList) parent;
-								String classStr=bulletList.getAttribute("class");
-								if("page".equals(classStr)){
-									return;
-								}
-							}
-							
-							TuInfo info = new TuInfo();
-							info.setUrl(urlRoot + href);
-							info.setTitle(title);
-							result.add(info);
-						}
-					}
-				});
-				return result;
-			}
-
-			@Override
-			public String nextPage(String html, ZhuatuConfig config) throws ParserException {
-				String nextUrl = null;
-				Parser parser = Parser.createParser(html, config.getCharsetString());
-				NodeList nextUl = parser.parse(new HasAttributeFilter("class", "page"));
-				NodeList nexts=nextUl.toNodeArray()[0].getChildren();
-				for (Node node : nexts.toNodeArray()) {
-					if (node instanceof LinkTag) {
-						LinkTag link = (LinkTag) node;
-						if("下一页".equals(link.getLinkText())){
-							nextUrl = urlRoot+"/"+link.getLink();
-							return nextUrl;
-						}
-					}
-
-				}
-				return nextUrl;
-			}
-
-
-		});
-
-		// 第二层解析具体照片
-		zhuatuServices.add(new ZhuatuDownloadService() {
-			@Override
-			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws Exception {
-				List<TuInfo> result = new LinkedList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharsetString());
-				NodeList imgagetList = parser.parse(new HasAttributeFilter("id", "imagelist"));
-				NodeList imgs=imgagetList.toNodeArray()[0].getChildren();
-				for (Node node : imgs.toNodeArray()) {
-					if (node instanceof ImageTag) {
-						ImageTag img = (ImageTag) node;
-						String src = ZhuatuUtil.formatUrl(img.getAttribute("src"));
+		new ZhuatuCenter().createDownloadConfig().setUrl(urlRoot)
+		.setCharset("gb2312").setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\ppmsgjp")
+		.createService().waitProject(true)//解析项目
+		.parserResultFunction((html,pageInfo,config,result)->{
+			Parser parser = Parser.createParser(html, config.getCharsetString());
+			NodeList list = parser.parse(new HasAttributeFilter("class", "lm"));
+			Node body = list.elementAt(0);
+			body.accept(new NodeVisitor() {
+				@Override
+				public void visitTag(Tag tag) {
+					if (tag instanceof LinkTag) {
+						LinkTag link = (LinkTag) tag;
+						String href = link.getLink();
 						
-						String alt = ZhuatuUtil.formatTitleName(img.getAttribute("alt"));
-						TuInfo info = new TuInfo();
-						info.setUrl(src);
-						info.setTitle(alt);
-						result.add(info);
-					}
-				}
-				pohtoRoot=pageInfo.getUrl().substring(0, pageInfo.getUrl().lastIndexOf("/"));
-				return result;
-			}
-
-			@Override
-			public String nextPage(String html, ZhuatuConfig config) throws Exception {
-				TuInfo info = new TuInfo();
-				Parser parser = Parser.createParser(html, config.getCharsetString());
-				NodeList list = parser.parse(new HasAttributeFilter("class", "image"));
-				Node body = list.elementAt(0);
-				body.accept(new NodeVisitor() {
-					@Override
-					public void visitTag(Tag tag) {
-						if (tag instanceof LinkTag) {
-							LinkTag link = (LinkTag) tag;
-							if("下一页".equals(link.getLinkText())){
-								String nextUrl = link.getLink();
-								info.setUrl(pohtoRoot+"/"+nextUrl);
+						Object parent=link.getParent();
+						if(parent instanceof BulletList){
+							BulletList bulletList=(BulletList) parent;
+							String classStr=bulletList.getAttribute("class");
+							if("page".equals(classStr)){
+								return;
 							}
 						}
+						result.add(new TuInfo(urlRoot + href,link.getLinkText()));
 					}
-				});
-				return info.getUrl();
+				}
+			});
+		}).next((html,config)->{
+			String nextUrl = null;
+			Parser parser = Parser.createParser(html, config.getCharsetString());
+			NodeList nextUl = parser.parse(new HasAttributeFilter("class", "page"));
+			NodeList nexts=nextUl.toNodeArray()[0].getChildren();
+			for (Node node : nexts.toNodeArray()) {
+				if (node instanceof LinkTag) {
+					LinkTag link = (LinkTag) node;
+					if("下一页".equals(link.getLinkText())){
+						nextUrl = urlRoot+"/"+link.getLink();
+						return nextUrl;
+					}
+				}
+
 			}
-
-		});
-
-		// 装载抓图任务
-		ZhuatuConfig config=new ZhuatuConfig();
-		config.setCharset("gb2312");
-		config.setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\ppmsgjp");
-//		config.setReqHtml(false);
-		ZhuatuFactory.start(
-				urlRoot, zhuatuServices,config);
+			return nextUrl;
+		}).createService().downloadUrl(true)//解析出要下载的图片
+		.parserResultFunction((html,pageInfo,config,result)->{
+			Parser parser = Parser.createParser(html, config.getCharsetString());
+			NodeList imgagetList = parser.parse(new HasAttributeFilter("id", "imagelist"));
+			NodeList imgs=imgagetList.toNodeArray()[0].getChildren();
+			for (Node node : imgs.toNodeArray()) {
+				if (node instanceof ImageTag) {
+					ImageTag img = (ImageTag) node;
+					result.add(new TuInfo(urlRoot + img.getAttribute("src"),img.getAttribute("alt")));
+				}
+			}
+			pohtoRoot=pageInfo.getUrl().substring(0, pageInfo.getUrl().lastIndexOf("/"));
+		}).next((html,config)->{
+			TuInfo info = new TuInfo();
+			Parser parser = Parser.createParser(html, config.getCharsetString());
+			NodeList list = parser.parse(new HasAttributeFilter("class", "image"));
+			Node body = list.elementAt(0);
+			body.accept(new NodeVisitor() {
+				@Override
+				public void visitTag(Tag tag) {
+					if (tag instanceof LinkTag) {
+						LinkTag link = (LinkTag) tag;
+						if("下一页".equals(link.getLinkText())){
+							String nextUrl = link.getLink();
+							info.setUrl(pohtoRoot+"/"+nextUrl);
+						}
+					}
+				}
+			});
+			return info.getUrl();
+		}).start();
 	}
 
 }
