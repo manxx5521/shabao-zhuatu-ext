@@ -29,7 +29,7 @@ public class ZhuatuItokooTest {
 		ZhuatuCenter center = new ZhuatuCenter().createConfig().setUrl(url[0]).setCharset("gbk")
 				.createService().waitProject(true)
 				.parserResultFunction((html, pageInfo, config, result) -> {
-					Parser parser = Parser.createParser(html,config.getCharsetString());
+					Parser parser = Parser.createParser(html,config.getCharsetName());
 					NodeList list = parser.parse(new HasAttributeFilter("class","tpc_content"));
 					Node body = list.elementAt(0);
 					body.accept(new NodeVisitor() {
@@ -44,7 +44,7 @@ public class ZhuatuItokooTest {
 				})
 				.createService()
 				.parserResultFunction((html, pageInfo, config, r) -> {
-					Parser parser = Parser.createParser(html, config.getCharsetString());
+					Parser parser = Parser.createParser(html, config.getCharsetName());
 					NodeList list = parser.parse(new HasAttributeFilter("class","tpc_content"));
 					Node body = list.elementAt(0);
 					body.accept(new NodeVisitor() {

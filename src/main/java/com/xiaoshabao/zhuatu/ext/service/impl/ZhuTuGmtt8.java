@@ -29,7 +29,7 @@ public class ZhuTuGmtt8 {
 		.setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\gmtt8")
 		.createService().waitProject(true)//解析出项目
 		.parserResultFunction((html,pageInfo,config,result)->{
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList list = parser.parse(new HasAttributeFilter("rel", "bookmark"));
 
 			for (Node node : list.toNodeArray()) {
@@ -47,7 +47,7 @@ public class ZhuTuGmtt8 {
 			}
 		}).next((html,config)->{
 			String nextUrl = null;
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList nexts = parser.parse(new HasAttributeFilter("class", "page-numbers"));
 			for (Node node : nexts.toNodeArray()) {
 				if (node instanceof LinkTag) {
@@ -58,11 +58,11 @@ public class ZhuTuGmtt8 {
 			return nextUrl;
 		}).createService().downloadUrl(true)//解析出要下载的链接
 		.parserResultFunction((html,pageInfo,config,result)->{
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList imgs = parser.parse(new HasAttributeFilter("class", "size-full"));
 			// 换解析思路
 			if (imgs == null || imgs.size() < 1) {
-				imgs = Parser.createParser(html, config.getCharsetString()).parse(new TagNameFilter("img"));
+				imgs = Parser.createParser(html, config.getCharsetName()).parse(new TagNameFilter("img"));
 			}
 
 			for (Node node : imgs.toNodeArray()) {

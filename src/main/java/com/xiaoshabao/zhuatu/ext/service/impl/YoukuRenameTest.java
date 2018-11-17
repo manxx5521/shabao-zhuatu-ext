@@ -102,7 +102,7 @@ public class YoukuRenameTest {
 		new ZhuatuCenter().createConfig().setUrl(project.getUrl()).createService()
 		.parserResultFunction((html,pageInfo,config,result)->{
 			try {
-				Parser parser = Parser.createParser(html,config.getCharsetString());
+				Parser parser = Parser.createParser(html,config.getCharsetName());
 				NodeList list = parser.parse(new HasAttributeFilter("class","v-meta"));
 
 				for (Node node : list.toNodeArray()) {
@@ -142,7 +142,7 @@ public class YoukuRenameTest {
 			}
 		}).next((html,config)->{
 			try {
-				Parser parser = Parser.createParser(html, config.getCharsetString());
+				Parser parser = Parser.createParser(html, config.getCharsetName());
 				NodeList nexts = parser.parse(new HasAttributeFilter(
 						"class", "next"));
 				for (Node node : nexts.toNodeArray()) {

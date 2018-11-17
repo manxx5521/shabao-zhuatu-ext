@@ -18,9 +18,7 @@ import com.xiaoshabao.zhuatu.core.ZhuatuUtil;
 
 public class ZhuTu99renti {
 
-//	private final static Logger logger = LoggerFactory.getLogger(ZhuTu99renti.class);
-
-	protected String url = "http://www.9grenti.org/html/guomosipai/";
+	public final static String url = "http://www.9grenti.org/html/guomosipai/";
 	
 	
 	/**封面图片 不下载*/
@@ -37,7 +35,7 @@ public class ZhuTu99renti {
 		*/
 		.createService().waitProject(true)
 		.parserResultFunction((html,pageInfo,config,result)->{
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList list = parser.parse(new HasAttributeFilter("class", "ulPic"));
 			Node body = list.elementAt(0);
 			body.accept(new NodeVisitor() {
@@ -52,7 +50,7 @@ public class ZhuTu99renti {
 			});
 		}).next((html,config)->{
 			String nextUrl = null;
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList nexts = parser.parse(new HasAttributeFilter("class", "a1"));
 			for (Node node : nexts.toNodeArray()) {
 				LinkTag link = (LinkTag) node;
@@ -64,7 +62,7 @@ public class ZhuTu99renti {
 			return nextUrl;
 		}).createService().downloadUrl(true)
 		.parserResultFunction((html,pageInfo,config,result)->{
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 
 			NodeList imgs = parser.parse(new TagNameFilter("img"));
 			for (Node node : imgs.toNodeArray()) {
@@ -82,7 +80,7 @@ public class ZhuTu99renti {
 			}
 		}).next((html,config)->{
 			String nextUrl = null;
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList nexts = parser.parse(new HasAttributeFilter("class", "a1"));
 			for (Node node : nexts.toNodeArray()) {
 				LinkTag link = (LinkTag) node;

@@ -25,7 +25,7 @@ public class ZhuatuPpmsgTest {
 		.setCharset("gb2312").setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\ppmsgjp")
 		.createService().waitProject(true)//解析项目
 		.parserResultFunction((html,pageInfo,config,result)->{
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList list = parser.parse(new HasAttributeFilter("class", "lm"));
 			Node body = list.elementAt(0);
 			body.accept(new NodeVisitor() {
@@ -49,7 +49,7 @@ public class ZhuatuPpmsgTest {
 			});
 		}).next((html,config)->{
 			String nextUrl = null;
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList nextUl = parser.parse(new HasAttributeFilter("class", "page"));
 			NodeList nexts=nextUl.toNodeArray()[0].getChildren();
 			for (Node node : nexts.toNodeArray()) {
@@ -65,7 +65,7 @@ public class ZhuatuPpmsgTest {
 			return nextUrl;
 		}).createService().downloadUrl(true)//解析出要下载的图片
 		.parserResultFunction((html,pageInfo,config,result)->{
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList imgagetList = parser.parse(new HasAttributeFilter("id", "imagelist"));
 			NodeList imgs=imgagetList.toNodeArray()[0].getChildren();
 			for (Node node : imgs.toNodeArray()) {
@@ -77,7 +77,7 @@ public class ZhuatuPpmsgTest {
 			pohtoRoot=pageInfo.getUrl().substring(0, pageInfo.getUrl().lastIndexOf("/"));
 		}).next((html,config)->{
 			TuInfo info = new TuInfo();
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList list = parser.parse(new HasAttributeFilter("class", "image"));
 			Node body = list.elementAt(0);
 			body.accept(new NodeVisitor() {

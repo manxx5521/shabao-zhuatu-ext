@@ -120,7 +120,7 @@ public class Zhuatu1024Test {
 			return null;
 		}).createService().downloadUrl(true)
 		.parserResultFunction((html,pageInfo,config,result)->{
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList imgagetList = parser.parse(new HasAttributeFilter("type", "image"));
 			for (Node node : imgagetList.toNodeArray()) {
 				if (node instanceof InputTag) {
