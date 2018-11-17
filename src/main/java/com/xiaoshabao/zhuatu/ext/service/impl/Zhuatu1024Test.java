@@ -117,7 +117,7 @@ public class Zhuatu1024Test {
 		ZhuatuConfig config=new ZhuatuConfig();
 		config.setCharset("gbk");
 		config.setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\1024");
-//		config.setProxyConfig("127.0.0.1", 1080);
+		config.setProxyConfig("127.0.0.1", 1080);
 		/*
 		config.addNoUrl("https://s19.postimg.org");
 		config.addNoUrl("https://s20.postimg.org");//https://s20.postimg.org/s7cdqfyel/image.jpg

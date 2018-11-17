@@ -21,7 +21,6 @@ import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.ZhuatuUtil;
 import com.xiaoshabao.zhuatu.core.ZhuatuFactory;
-import com.xiaoshabao.zhuatu.http.HttpType;
 import com.xiaoshabao.zhuatu.service.ZhuatuDownloadService;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
 import com.xiaoshabao.zhuatu.service.ZhuatuWaitService;
@@ -130,8 +129,10 @@ public class ZhuTu99renti {
 		ZhuatuConfig config=new ZhuatuConfig();
 		config.setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\99renti");
 		config.setCharset("GBK");
-		config.setDwonloadType(HttpType.HTTPCLIENT);
-//		config.addCheckPoject("丰满圆润的美女果果大尺度情趣内衣人体");
+		config.setProxyConfig("127.0.0.1", 1080);
+//		config.setDwonloadType(HttpType.HTTPCLIENT);
+//		config.addCheckPoject("国模桂芝2017.07.07超大尺度掰穴人体","美女国模希希2016.10.29超大尺度掰穴人体",
+//		"国模张巧丽超大尺度器具自慰人体","国模小雅私拍情趣内衣人体","国模李心艾2017.04.04超大尺度私拍人体","国模辰辰2017.05.20超大尺度掰穴人体","美女国模柳絮2016.08.28超大尺度粉红嫩穴人体");
 		ZhuatuFactory.start(url, zhuatuServices, config);
 	}
 
